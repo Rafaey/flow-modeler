@@ -1,36 +1,26 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles.css";
 import { FlowModeler } from "react-flow-modeler";
 
 export default function App() {
+  const [externalState, setExternalState] = useState({
+    flow: { firstElementId: null, elements: {} }
+  });
+
   return (
     <FlowModeler
-      flow={{
-        firstElementId: "a",
-        elements: {
-          a: {
-            nextElementId: "b",
-            data: { stepContent: "Aadasdfsdfsafsaf" }
-          },
-          b: {
-            nextElements: [
-              { id: "c", conditionData: { conditionValue: "1" } },
-              { conditionData: { conditionValue: "2" } }
-            ],
-            data: { conditionType: "B?" }
-          },
-          c: {
-            data: { stepContent: "C" }
-          }
-        }
+      flow={externalState.flow}
+      renderStep={({ data }) => (data ? <label>{data.value}</label> : null)}
+      renderGatewayConditionType={({ data }) =>
+        data ? <label>{data.value}</label> : null
+      }
+      renderGatewayConditionValue={({ data }) =>
+        data ? <label>{data.value}</label> : null
+      }
+      onChange={({ changedFlow }) => {
+        externalState.flow = changedFlow;
+        setExternalState(externalState);
       }}
-      renderStep={({ data }) => <label>{data ? data.stepContent : null}</label>}
-      renderGatewayConditionType={({ data }) => (
-        <label>{data ? data.conditionType : null}</label>
-      )}
-      renderGatewayConditionValue={({ data }) => (
-        <label>{data ? data.conditionValue : null}</label>
-      )}
     />
   );
 }
